@@ -1,64 +1,41 @@
 package com.example.coffee_shop;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DeleteProductFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.fragment.app.Fragment;
+
 public class DeleteProductFragment extends Fragment {
+    EditText idInput;
+    Button deleteButton;
+    DBHelper dbHelper;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public DeleteProductFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DeleteProductFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DeleteProductFragment newInstance(String param1, String param2) {
-        DeleteProductFragment fragment = new DeleteProductFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public DeleteProductFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_delete_product, container, false);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_delete_product, container, false);
+        idInput = view.findViewById(R.id.idInput);
+        deleteButton = view.findViewById(R.id.deleteButton);
+        dbHelper = new DBHelper(getContext());
+
+        deleteButton.setOnClickListener(v -> {
+            String idStr = idInput.getText().toString();
+            if (!idStr.isEmpty()) {
+                int id = Integer.parseInt(idStr);
+                dbHelper.deleteProduct(id);
+                Toast.makeText(getContext(), "Product deleted (if existed)", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Please enter product ID", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
     }
 }

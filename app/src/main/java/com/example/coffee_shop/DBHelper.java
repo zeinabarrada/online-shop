@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DBHelper extends SQLiteOpenHelper {
+public class   DBHelper extends SQLiteOpenHelper {
     private static String databaseName = "productDB";
     SQLiteDatabase productDatabase;
 
@@ -52,6 +52,19 @@ public class DBHelper extends SQLiteOpenHelper {
         productDatabase.delete("product", "id='" + productId + "'", null);
         productDatabase.close();
     }
+    // Add this method inside your DBHelper class
+    public boolean updateProduct(int id, String name, double price, String image) {
+        productDatabase = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        contentValues.put("price", price);
+        contentValues.put("image", image);
+
+        int rowsAffected = productDatabase.update("product", contentValues, "id = ?", new String[]{String.valueOf(id)});
+        productDatabase.close();
+        return rowsAffected > 0;
+    }
+
 
     // User's Part
     public boolean addUser(String username, String password) {

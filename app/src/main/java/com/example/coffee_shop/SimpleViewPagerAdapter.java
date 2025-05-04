@@ -11,7 +11,7 @@ public class SimpleViewPagerAdapter extends FragmentStateAdapter {
     private List<Fragment> fragmentList;
     public SimpleViewPagerAdapter(FragmentActivity fragmentActivity,List<Fragment> fragmentList)
     {
-        super(FragmentActivity);
+        super(fragmentActivity);
         this.fragmentList=fragmentList;
     }
     @NonNull

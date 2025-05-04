@@ -11,11 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddProductFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class AddProductFragment extends Fragment {
 
 EditText nameInput, priceInput,imageInput;
@@ -25,23 +21,6 @@ DBHelper dbHelper;
     public AddProductFragment() {
     }
 
-    public static AddProductFragment newInstance(String param1, String param2) {
-        AddProductFragment fragment = new AddProductFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,15 +36,22 @@ DBHelper dbHelper;
             String priceStr=priceInput.getText().toString();
             String image=imageInput.getText().toString();
             if(!name.isEmpty() && !priceStr.isEmpty())
-            {
+            { try {
                 double price=Double.parseDouble(priceStr);
                 boolean inserted=dbHelper.addProduct(name,price,image);
                 Toast.makeText(getContext(),inserted ? "Product added":"Failed to add product",Toast.LENGTH_SHORT).show();
-            }else{
+            }
+
+
+            catch (NumberFormatException e) {
+                // Handle invalid price format
+                Toast.makeText(getContext(), "Invalid price format", Toast.LENGTH_SHORT).show();
+            }}
+            else{
                 Toast.makeText(getContext(),"Please fill all fields", Toast.LENGTH_SHORT).show();
             }
         });
 
-        return inflater.inflate(R.layout.fragment_add_product, container, false);
+        return view;
     }
 }
