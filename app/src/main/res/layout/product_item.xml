@@ -1,41 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#f5f5f5"
-    android:layout_margin="8dp"
-    android:elevation="2dp">
+    android:padding="12dp"
+    android:background="#ffffff"
+    android:elevation="4dp"
+    android:layout_margin="8dp">
 
+    <ImageView
+        android:id="@+id/productImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_launcher_foreground"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
     <TextView
         android:id="@+id/productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Product Name"
+        android:textColor="#000000"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#000000" />
+        android:textStyle="bold" />
 
     <TextView
-    android:id="@+id/productPrice"
+        android:id="@+id/productPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Price: $0.00"
-        android:textSize="16sp"
-        android:textColor="#333333" />
+        android:textColor="#333333"
+        android:textSize="16sp" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:backgroundTint="@android:color/holo_red_dark"
         android:text="Delete"
-        />
+        android:textColor="@android:color/white" />
+
     <Button
         android:id="@+id/modifyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Modify" />
 
+</LinearLayout>
+    </LinearLayout>
 </LinearLayout>
