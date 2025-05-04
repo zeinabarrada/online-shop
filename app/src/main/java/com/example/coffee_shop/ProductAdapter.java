@@ -2,7 +2,7 @@ package com.example.coffee_shop;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
@@ -24,7 +25,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
          this.productList=productList;
          this.fragmentManager=fragmentManager;
      }
-     public static class ProductViewHolder extends RecyclerView.ViewHolder{
+
+
+    public static class ProductViewHolder extends RecyclerView.ViewHolder{
          TextView name,price;
          Button deleteButton, modifyButton;
          public ProductViewHolder(View itemView){
@@ -70,4 +73,5 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public int getItemCount() {
         return productList.size();
     }
+
 }

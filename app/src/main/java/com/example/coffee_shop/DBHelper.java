@@ -17,6 +17,9 @@ public class   DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table product(id integer primary key,name text not null, price integer not null, image text)");
         db.execSQL("create table user(id integer primary key autoincrement,username text not null, password text not null)");
+        db.execSQL("create table cart(id integer primary key autoincrement, user_id integer, product_id integer, " +
+                "foreign key(user_id) references user(id), foreign key(product_id) references product(id))");
+
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -89,5 +92,16 @@ public class   DBHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return exists;
+    }
+
+    // cart part
+    public boolean addToCart(int userId, int productId){
+        productDatabase = getWritableDatabase();
+        ContentValues row = new ContentValues();
+        row.put("user_id", userId);
+        row.put("product_id", productId);
+        long result = productDatabase.insert("cart", null, row);
+        productDatabase.close();
+        return result != -1;
     }
 }
