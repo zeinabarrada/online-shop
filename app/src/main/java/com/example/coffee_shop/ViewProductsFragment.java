@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,7 @@ public class ViewProductsFragment extends Fragment {
     ProductAdapter adapter;
     DBHelper dbHelper;
     List<Product> productList;
+    FragmentManager fragmentManager;
 
     public ViewProductsFragment() {}
 
@@ -42,11 +44,31 @@ public class ViewProductsFragment extends Fragment {
                 String image = cursor.getString(3);
                 productList.add(new Product(id, name, price, image));
             }
-            while (cursor.moveToFirst());
+            while (cursor.moveToNext());
             cursor.close();
         }
-        adapter = new ProductAdapter(getContext(), productList);
+        adapter = new ProductAdapter(getContext(), productList,fragmentManager);
         recyclerView.setAdapter(adapter);
         return view;
     }
+    public void refreshProducts() {
+        DBHelper dbHelper = new DBHelper(getContext());
+        Cursor cursor = dbHelper.fetchAllProducts();
+        productList.clear();
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String id = cursor.getString(0);
+                String name = cursor.getString(1);
+                double price = cursor.getDouble(2);
+                String image = cursor.getString(3);
+
+                productList.add(new Product(id, name, price, image));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
 }

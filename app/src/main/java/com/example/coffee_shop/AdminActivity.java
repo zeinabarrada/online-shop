@@ -32,8 +32,7 @@ public class AdminActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         tabLayout.addTab(tabLayout.newTab().setText("View"));
         tabLayout.addTab(tabLayout.newTab().setText("Add"));
-        tabLayout.addTab(tabLayout.newTab().setText("Delete"));
-        tabLayout.addTab(tabLayout.newTab().setText("Modify"));
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -46,5 +45,18 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (position == 0) { // 0 is ViewProductsFragment
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag("f" + position);
+                    if (fragment instanceof ViewProductsFragment) {
+                        ((ViewProductsFragment) fragment).refreshProducts();
+                    }
+                }
+            }
+        });
+
     }
 }
