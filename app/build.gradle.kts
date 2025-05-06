@@ -6,6 +6,10 @@ android {
     namespace = "com.example.coffee_shop"
     compileSdk = 35
 
+    buildFeatures {
+        dataBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.example.coffee_shop"
         minSdk = 24
