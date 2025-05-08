@@ -27,7 +27,18 @@ public class ModifyProductFragment extends Fragment {
         imageInput = view.findViewById(R.id.imageInput);
         modifyButton = view.findViewById(R.id.modifyButton);
         dbHelper = new DBHelper(getContext());
+        Bundle args = getArguments();
+        if (args != null) {
+            String productId = args.getString("productId");
+            String productName = args.getString("productName");
+            String productPrice = args.getString("productPrice");
+            String productImage = args.getString("productImage");
 
+            if (productId != null) idInput.setText(productId);
+            if (productName != null) nameInput.setText(productName);
+            if (productPrice != null) priceInput.setText(productPrice);
+            if (productImage != null) imageInput.setText(productImage);
+        }
         modifyButton.setOnClickListener(v -> {
             String idStr = idInput.getText().toString();
             String name = nameInput.getText().toString();

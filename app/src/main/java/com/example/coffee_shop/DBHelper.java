@@ -6,8 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DBHelper extends SQLiteOpenHelper {
-
+public class   DBHelper extends SQLiteOpenHelper {
     private static String databaseName = "productDB";
     SQLiteDatabase productDatabase;
 
@@ -36,18 +35,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 "product_id INTEGER," +
                 "name TEXT," +
                 "price REAL)");
+        db.execSQL("create table product(id integer primary key,name text not null, price integer not null, image text)");
+        db.execSQL("create table user(id integer primary key autoincrement,username text not null, password text not null)");
+        db.execSQL("create table cart(id integer primary key autoincrement, user_id integer, product_id integer, " +
+                "foreign key(user_id) references user(id), foreign key(product_id) references product(id))");
+
     }
 
-    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS product");
-        db.execSQL("DROP TABLE IF EXISTS user");
-        db.execSQL("DROP TABLE IF EXISTS cart");
+        db.execSQL("drop table if exists product");
+        db.execSQL("drop table if exists user");
         onCreate(db);
     }
 
-    // ------------------ Product Methods ------------------
-
+    // Products Part
     public boolean addProduct(String name, double price, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues row = new ContentValues();
@@ -61,7 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor fetchAllProducts() {
         productDatabase = getReadableDatabase();
-        String[] rowDetails = {"id", "name", "price", "image"};
+        String[] rowDetails = {"id", "name", "price", "image" };
         Cursor cursor = productDatabase.query("product", rowDetails, null, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -71,23 +72,24 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void deleteProduct(int productId) {
         productDatabase = getWritableDatabase();
-        productDatabase.delete("product", "id = ?", new String[]{String.valueOf(productId)});
+        productDatabase.delete("product", "id='" + productId + "'", null);
         productDatabase.close();
     }
-
+    // Add this method inside your DBHelper class
     public boolean updateProduct(int id, String name, double price, String image) {
         productDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("price", price);
         contentValues.put("image", image);
+
         int rowsAffected = productDatabase.update("product", contentValues, "id = ?", new String[]{String.valueOf(id)});
         productDatabase.close();
         return rowsAffected > 0;
     }
 
-    // ------------------ User Methods ------------------
 
+    // User's Part
     public boolean addUser(String username, String password) {
         productDatabase = getWritableDatabase();
         ContentValues row = new ContentValues();
@@ -96,6 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         long result = productDatabase.insert("user", null, row);
         productDatabase.close();
         return result != -1;
+
     }
 
     public boolean checkUser(String username, String password) {
@@ -139,5 +142,16 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("cart", "id = ?", new String[]{String.valueOf(cartId)});
         db.close();
+    }
+
+    // cart part
+    public boolean addToCart(int userId, int productId){
+        productDatabase = getWritableDatabase();
+        ContentValues row = new ContentValues();
+        row.put("user_id", userId);
+        row.put("product_id", productId);
+        long result = productDatabase.insert("cart", null, row);
+        productDatabase.close();
+        return result != -1;
     }
 }

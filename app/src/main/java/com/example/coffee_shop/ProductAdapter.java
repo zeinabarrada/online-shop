@@ -2,17 +2,19 @@ package com.example.coffee_shop;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
@@ -24,13 +26,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
          this.productList=productList;
          this.fragmentManager=fragmentManager;
      }
-     public static class ProductViewHolder extends RecyclerView.ViewHolder{
+
+
+    public static class ProductViewHolder extends RecyclerView.ViewHolder{
          TextView name,price;
+         ImageView image;
          Button deleteButton, modifyButton;
          public ProductViewHolder(View itemView){
              super(itemView);
              name=itemView.findViewById(R.id.productName);
              price=itemView.findViewById(R.id.productPrice);
+             image=itemView.findViewById(R.id.productImage);
              deleteButton = itemView.findViewById(R.id.deleteButton);
              modifyButton = itemView.findViewById(R.id.modifyButton);
          }
@@ -48,6 +54,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Product p = productList.get(position);
         holder.name.setText(p.getName());
         holder.price.setText("Price: $" + p.getPrice());
+        int imageResId = context.getResources().getIdentifier(
+                p.getImage(), "drawable", context.getPackageName());
+
+        if (imageResId != 0) {
+            holder.image.setImageResource(imageResId);
+        }
         holder.deleteButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, ModifyDeleteActivity.class);
             intent.putExtra("fragment", "delete");
@@ -59,6 +71,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             Intent intent = new Intent(context, ModifyDeleteActivity.class);
             intent.putExtra("fragment", "modify");
             intent.putExtra("productId", p.getId());
+            intent.putExtra("productName", p.getName());
+            intent.putExtra("productPrice", String.valueOf(p.getPrice()));
+            intent.putExtra("productImage", p.getImage());
             context.startActivity(intent);
         });
 
@@ -70,4 +85,5 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public int getItemCount() {
         return productList.size();
     }
+
 }
