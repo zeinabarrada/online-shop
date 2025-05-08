@@ -17,6 +17,8 @@
         <activity android:name=".AdminActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".ModifyDeleteActivity" />
+        <activity android:name=".CartActivity"/>
+
         <activity
             android:name=".LoginActivity"
             android:exported="true">

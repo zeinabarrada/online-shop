@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                     // Check if regular user exists in the database
                     if (dbHelper.checkUser(user, pass)) {
                         Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, PaymentActivity.class));
+                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                         finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();

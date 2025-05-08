@@ -6,152 +6,175 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class   DBHelper extends SQLiteOpenHelper {
-    private static String databaseName = "productDB";
-    SQLiteDatabase productDatabase;
+public class DBHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "coffeeShopDB";
+    private static final int DATABASE_VERSION = 3; // Incremented version
+
+    // Table names
+    private static final String TABLE_PRODUCTS = "products";
+    private static final String TABLE_USERS = "users";
+    private static final String TABLE_CART = "cart";
 
     public DBHelper(Context context) {
-        super(context, databaseName, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Product Table
-        db.execSQL("CREATE TABLE product (" +
-                "id INTEGER PRIMARY KEY," +
-                "name TEXT NOT NULL," +
-                "price INTEGER NOT NULL," +
-                "image TEXT)");
+        // Create products table
+        String CREATE_PRODUCTS_TABLE = "CREATE TABLE " + TABLE_PRODUCTS + "("
+                + "id INTEGER PRIMARY KEY,"
+                + "name TEXT NOT NULL,"
+                + "price REAL NOT NULL,"
+                + "image TEXT)";
+        db.execSQL(CREATE_PRODUCTS_TABLE);
 
-        // User Table
-        db.execSQL("CREATE TABLE user (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "username TEXT NOT NULL," +
-                "password TEXT NOT NULL)");
+        // Create users table
+        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "username TEXT NOT NULL UNIQUE,"
+                + "password TEXT NOT NULL)";
+        db.execSQL(CREATE_USERS_TABLE);
 
-        // Cart Table
-        db.execSQL("CREATE TABLE cart (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "product_id INTEGER," +
-                "name TEXT," +
-                "price REAL)");
-        db.execSQL("create table product(id integer primary key,name text not null, price integer not null, image text)");
-        db.execSQL("create table user(id integer primary key autoincrement,username text not null, password text not null)");
-        db.execSQL("create table cart(id integer primary key autoincrement, user_id integer, product_id integer, " +
-                "foreign key(user_id) references user(id), foreign key(product_id) references product(id))");
-
+        // Create cart table with proper foreign keys
+        String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART + "("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "user_id INTEGER,"
+                + "product_id INTEGER,"
+                + "quantity INTEGER DEFAULT 1,"
+                + "FOREIGN KEY(user_id) REFERENCES " + TABLE_USERS + "(id) ON DELETE CASCADE,"
+                + "FOREIGN KEY(product_id) REFERENCES " + TABLE_PRODUCTS + "(id) ON DELETE CASCADE)";
+        db.execSQL(CREATE_CART_TABLE);
     }
 
+    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists product");
-        db.execSQL("drop table if exists user");
+        // Drop older tables if existed
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
+
+        // Create tables again
         onCreate(db);
     }
 
-    // Products Part
+    // ========== PRODUCT METHODS ==========
     public boolean addProduct(String name, double price, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues row = new ContentValues();
-        row.put("name", name);
-        row.put("price", price);
-        row.put("image", image);
-        long result = db.insert("product", null, row);
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("price", price);
+        values.put("image", image);
+
+        long result = db.insert(TABLE_PRODUCTS, null, values);
         db.close();
         return result != -1;
     }
 
     public Cursor fetchAllProducts() {
-        productDatabase = getReadableDatabase();
-        String[] rowDetails = {"id", "name", "price", "image" };
-        Cursor cursor = productDatabase.query("product", rowDetails, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        return cursor;
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(TABLE_PRODUCTS,
+                new String[]{"id", "name", "price", "image"},
+                null, null, null, null, null);
     }
 
-    public void deleteProduct(int productId) {
-        productDatabase = getWritableDatabase();
-        productDatabase.delete("product", "id='" + productId + "'", null);
-        productDatabase.close();
-    }
-    // Add this method inside your DBHelper class
     public boolean updateProduct(int id, String name, double price, String image) {
-        productDatabase = getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("price", price);
-        contentValues.put("image", image);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("price", price);
+        values.put("image", image);
 
-        int rowsAffected = productDatabase.update("product", contentValues, "id = ?", new String[]{String.valueOf(id)});
-        productDatabase.close();
+        int rowsAffected = db.update(TABLE_PRODUCTS, values,
+                "id = ?", new String[]{String.valueOf(id)});
+        db.close();
         return rowsAffected > 0;
     }
 
+    public boolean deleteProduct(int productId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_PRODUCTS,
+                "id = ?", new String[]{String.valueOf(productId)});
+        db.close();
+        return rowsAffected > 0;
+    }
 
-    // User's Part
+    // ========== USER METHODS ==========
     public boolean addUser(String username, String password) {
-        productDatabase = getWritableDatabase();
-        ContentValues row = new ContentValues();
-        row.put("username", username);
-        row.put("password", password);
-        long result = productDatabase.insert("user", null, row);
-        productDatabase.close();
-        return result != -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("username", username);
+        values.put("password", password);
 
+        long result = db.insert(TABLE_USERS, null, values);
+        db.close();
+        return result != -1;
     }
 
     public boolean checkUser(String username, String password) {
-        productDatabase = getReadableDatabase();
-        String[] rowDetails = {"username", "password"};
-        Cursor cursor = productDatabase.query("user", rowDetails, "username=? AND password=?",
-                new String[]{username, password}, null, null, null);
-        boolean exists = false;
-        if (cursor != null && cursor.moveToFirst()) {
-            exists = true;
-            cursor.close();
-        }
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS,
+                new String[]{"id"},
+                "username = ? AND password = ?",
+                new String[]{username, password},
+                null, null, null);
+
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
         return exists;
     }
 
-    // ------------------ Cart Methods ------------------
-
-    public boolean addToCart(int productId, String name, double price) {
+    // ========== CART METHODS ==========
+    public boolean addToCart(int userId, int productId, int quantity) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("user_id", userId);
         values.put("product_id", productId);
-        values.put("name", name);
-        values.put("price", price);
-        long result = db.insert("cart", null, values);
+        values.put("quantity", quantity);
+
+        long result = db.insert(TABLE_CART, null, values);
         db.close();
         return result != -1;
     }
 
-    public Cursor getCartItems() {
+    public Cursor getCartItems(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM cart", null);
+        return db.rawQuery("SELECT cart.id, products.name, products.price, cart.quantity " +
+                "FROM " + TABLE_CART + " INNER JOIN " + TABLE_PRODUCTS +
+                " ON cart.product_id = products.id " +
+                "WHERE cart.user_id = ?", new String[]{String.valueOf(userId)});
     }
 
-    public void clearCart() {
+    public boolean updateCartItemQuantity(int cartId, int quantity) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("cart", null, null);
+        ContentValues values = new ContentValues();
+        values.put("quantity", quantity);
+
+        int rowsAffected = db.update(TABLE_CART, values,
+                "id = ?", new String[]{String.valueOf(cartId)});
         db.close();
+        return rowsAffected > 0;
     }
 
-    public void removeCartItem(int cartId) {
+    public boolean removeCartItem(int cartId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("cart", "id = ?", new String[]{String.valueOf(cartId)});
+        int rowsAffected = db.delete(TABLE_CART,
+                "id = ?", new String[]{String.valueOf(cartId)});
         db.close();
+        return rowsAffected > 0;
     }
 
-    // cart part
-    public boolean addToCart(int userId, int productId){
-        productDatabase = getWritableDatabase();
-        ContentValues row = new ContentValues();
-        row.put("user_id", userId);
-        row.put("product_id", productId);
-        long result = productDatabase.insert("cart", null, row);
-        productDatabase.close();
-        return result != -1;
+    public boolean clearUserCart(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_CART,
+                "user_id = ?", new String[]{String.valueOf(userId)});
+        db.close();
+        return rowsAffected > 0;
     }
 }
