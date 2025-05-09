@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -17,19 +18,38 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecyclerView"
         android:layout_below="@id/cartTitle"
-        android:layout_above="@id/btnCheckout"
+        android:layout_above="@id/bottomPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="12dp" />
 
-    <Button
-        android:id="@+id/btnCheckout"
+    <LinearLayout
+        android:id="@+id/bottomPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Checkout"
-        android:textColor="#000"
-        android:background="#4CAF50"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp" />
+        android:orientation="vertical"
+        android:paddingVertical="8dp"
+        android:background="#F5F5F5">
+
+        <TextView
+            android:id="@+id/totalPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total: $0.00"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnCheckout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#4CAF50"
+            android:text="Checkout"
+            android:textAllCaps="false"
+            android:textColor="#FFF"
+            tools:ignore="TextContrastCheck" />
+    </LinearLayout>
 </RelativeLayout>

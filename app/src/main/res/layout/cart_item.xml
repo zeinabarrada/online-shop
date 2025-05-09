@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#ffffff"
+    android:background="#f5f5f5"
     android:layout_margin="8dp"
     android:elevation="2dp">
 
+
+
+
     <TextView
-        android:id="@+id/cartItemName"
+        android:id="@+id/productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Item Name"
+        android:text="Product Name"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#000000" />
 
+    <ImageView
+        android:id="@+id/productImage"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="8dp" />
+
     <TextView
-        android:id="@+id/cartItemPrice"
+        android:id="@+id/productPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Price: $0.00"
@@ -26,13 +38,50 @@
         android:textColor="#333333"
         android:layout_marginBottom="8dp" />
 
-    <Button
-        android:id="@+id/btnRemove"
-        android:layout_width="wrap_content"
+    <!-- Quantity Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Remove"
-        android:textColor="#FFFFFF"
-        android:background="#f44336"
-        android:padding="10dp"
-        android:textAllCaps="false" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnDecrease"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="-"
+            android:background="@drawable/btn_round"
+            android:textColor="#000"/>
+
+
+        <TextView
+            android:id="@+id/quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="18sp"
+            android:paddingHorizontal="16dp"/>
+
+        <Button
+            android:id="@+id/btnIncrease"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_round"
+            android:text="+"
+            android:textSize="14sp"
+           android:textColor="#000"
+            tools:ignore="TouchTargetSizeCheck" />
+
+
+
+        <Button
+            android:id="@+id/removeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="#FF4444"
+            android:text="Remove"
+            android:textColor="#FFF"
+            tools:ignore="TouchTargetSizeCheck" />
+    </LinearLayout>
 </LinearLayout>
