@@ -1,6 +1,7 @@
 package com.example.coffee_shop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,6 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.coffee_shop.Payment.PaymentActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +38,8 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Updat
 
         recyclerView = findViewById(R.id.cartRecyclerView);
         totalPriceTextView = findViewById(R.id.totalPrice);
-        Button checkoutButton = findViewById(R.id.btnCheckout);
+        //Button checkoutButton = findViewById(R.id.btnCheckout);
+        Button buyNowButton = findViewById(R.id.buyNowButton);
         dbHelper = new DBHelper(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -43,7 +48,9 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Updat
 
         loadCartItems();
 
-        checkoutButton.setOnClickListener(v -> proceedToCheckout());
+        buyNowButton.setOnClickListener(v -> startActivity(new Intent(CartActivity.this, PaymentActivity.class)));
+
+
     }
 
     private void loadCartItems() {
