@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,8 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
     private DBHelper dbHelper;
     private int currentUserId;
 
+
+
     public UserProductAdapter(Context context, List<Product> productList, FragmentManager fragmentManager, int userId) {
         this.context = context;
         this.productList = productList;
@@ -31,11 +34,14 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         TextView name, price;
         Button addToCartButton;
+        ImageView image;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.productName);
             price = itemView.findViewById(R.id.productPrice);
+            image=itemView.findViewById(R.id.productImage);
+
             addToCartButton = itemView.findViewById(R.id.addToCartButton);
         }
     }
@@ -52,6 +58,12 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
         Product p = productList.get(position);
         holder.name.setText(p.getName());
         holder.price.setText("Price: $" + p.getPrice());
+        int imageResId = context.getResources().getIdentifier(
+                p.getImage(), "drawable", context.getPackageName());
+
+        if (imageResId != 0) {
+            holder.image.setImageResource(imageResId);
+        }
 
         // Add click listener for Add to Cart button
         holder.itemView.findViewById(R.id.addToCartButton).setOnClickListener(v -> {
