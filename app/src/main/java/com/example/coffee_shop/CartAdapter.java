@@ -43,10 +43,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.productPrice.setText(String.format("$%.2f", item.getPrice()));
         holder.quantity.setText(String.valueOf(item.getQuantity()));
 
-        if(item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
-            Glide.with(context)
-                    .load(item.getImageUrl())
-                    .into(holder.productImage);
+
+        int imageResId = context.getResources().getIdentifier(
+                item.getImageUrl(), "drawable", context.getPackageName());
+
+        if (imageResId != 0) {
+            holder.productImage.setImageResource(imageResId);
         }
 
         holder.btnIncrease.setOnClickListener(v -> {
@@ -91,11 +93,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     static class CartViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
+
         TextView productName, productPrice, quantity;
         Button btnIncrease, btnDecrease, removeButton;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
+
             productImage = itemView.findViewById(R.id.productImage);
             productName = itemView.findViewById(R.id.productName);
             productPrice = itemView.findViewById(R.id.productPrice);
