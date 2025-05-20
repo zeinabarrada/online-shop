@@ -1,10 +1,10 @@
 package com.example.coffee_shop;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,18 +16,19 @@ import com.example.coffee_shop.Payment.PaymentActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartActivity extends AppCompatActivity implements CartAdapter.UpdateTotalListener {
+public class CheckoutActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private CartAdapter adapter;
+    private CheckoutAdapter adapter;
     private DBHelper dbHelper;
     private int currentUserId;
     private TextView totalPriceTextView;
+    private EditText addressEditText;
     private List<CartItem> cartItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cart_list);
+        setContentView(R.layout.activity_checkout);
 
         currentUserId = getIntent().getIntExtra("USER_ID", -1);
         if(currentUserId == -1) {
@@ -36,27 +37,24 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Updat
             return;
         }
 
-        recyclerView = findViewById(R.id.cartRecyclerView);
-        totalPriceTextView = findViewById(R.id.totalPrice);
-        //Button checkoutButton = findViewById(R.id.btnCheckout);
-        Button buyNowButton = findViewById(R.id.buyNowButton);
+        recyclerView = findViewById(R.id.checkoutRecyclerView); // Matches XML
+        totalPriceTextView = findViewById(R.id.totalPrice); // Matches XML
+        addressEditText = findViewById(R.id.addressEditText); // Matches XML
+        Button placeOrderButton = findViewById(R.id.btnPlaceOrder); // Matches XM
         dbHelper = new DBHelper(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CartAdapter(cartItems, this, this);
+        adapter = new CheckoutAdapter(cartItems, this);
         recyclerView.setAdapter(adapter);
 
         loadCartItems();
 
-        buyNowButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+        placeOrderButton.setOnClickListener(v -> {
+            Intent intent = new Intent(CheckoutActivity.this, PaymentActivity.class);
             intent.putExtra("USER_ID", currentUserId);
             startActivity(intent);
         });
-    }
-
-
-
+        }
 
     private void loadCartItems() {
         Cursor cursor = dbHelper.getCartItems(currentUserId);
@@ -78,30 +76,31 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Updat
         }
 
         adapter.notifyDataSetChanged();
-        updateTotalPrice(total);
-    }
-
-    private void updateTotalPrice(double total) {
         totalPriceTextView.setText(String.format("Total: $%.2f", total));
     }
 
-    private void proceedToCheckout() {
+    private void placeOrder() {
+        String address = addressEditText.getText().toString().trim();
+        if(address.isEmpty()) {
+            Toast.makeText(this, "Please enter delivery address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if(cartItems.isEmpty()) {
             Toast.makeText(this, "Your cart is empty!", Toast.LENGTH_SHORT).show();
             return;
         }
-        dbHelper.clearUserCart(currentUserId);
-        Toast.makeText(this, "Checkout successful! Thank you!", Toast.LENGTH_SHORT).show();
-        finish();
-    }
 
-    @Override
-    public void onUpdateTotal() {
-        double total = 0.0;
-        for(CartItem item : cartItems) {
-            total += item.getPrice() * item.getQuantity();
+        // Save order to database (you'll need to implement this in DBHelper)
+        boolean success = dbHelper.createOrder(currentUserId, address, cartItems);
+
+        if(success) {
+            dbHelper.clearUserCart(currentUserId);
+            Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Failed to place order", Toast.LENGTH_SHORT).show();
         }
-        updateTotalPrice(total);
     }
 
     @Override

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 
 public class ViewProductActivity extends AppCompatActivity {
-    Button btnGoToCart;
+
     private int currentUserId;
 
     @Override

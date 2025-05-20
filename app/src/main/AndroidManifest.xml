@@ -19,7 +19,7 @@
         <activity android:name=".ModifyDeleteActivity" />
         <activity android:name=".CartActivity"/>
         <activity android:name=".ViewProductActivity" />
-
+        <activity android:name=".CheckoutActivity" />
 
         <activity
             android:name=".LoginActivity"
