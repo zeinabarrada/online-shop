@@ -1,6 +1,7 @@
 package com.example.coffee_shop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +76,14 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
                 Toast.makeText(context, "Failed to add to cart", Toast.LENGTH_SHORT).show();
             }
         });
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ViewProductActivity.class);
+            intent.putExtra("productName", p.getName());
+            intent.putExtra("productPrice", String.valueOf(p.getPrice()));
+            intent.putExtra("productImage", p.getImage());
+            context.startActivity(intent);
+        });
+
     }
 
 

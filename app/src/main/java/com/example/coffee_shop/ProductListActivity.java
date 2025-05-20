@@ -2,6 +2,8 @@ package com.example.coffee_shop;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +22,7 @@ public class ProductListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_products);
 
-//        recyclerView = findViewById(R.id.userProductRecyclerView);
+     //recyclerView = findViewById(R.id.userProductRecyclerView);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         dbHelper = new DBHelper(this);
         productList = new ArrayList<>();
@@ -40,16 +42,29 @@ public class ProductListActivity extends AppCompatActivity {
     private void loadProducts() {
         productList.clear();
         Cursor cursor = dbHelper.fetchAllProducts();
+        //String image = null;
+        String image = getIntent().getStringExtra("productImage");
+
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 String id = cursor.getString(0);
                 String name = cursor.getString(1);
                 double price = cursor.getDouble(2);
-                String image = cursor.getString(3);
+                image = cursor.getString(3);
                 productList.add(new Product(id, name, price, image));
             } while (cursor.moveToNext());
             cursor.close();
         }
+
+
+        ImageView imageView = findViewById(R.id.viewProductImage);
+
+        int imageResId = getResources().getIdentifier(image, "drawable", getPackageName());
+        if (imageResId != 0) {
+            imageView.setImageResource(imageResId);
+        }
+
+
         adapter.notifyDataSetChanged();
     }
 }
