@@ -54,32 +54,50 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Product p = productList.get(position);
         holder.name.setText(p.getName());
         holder.price.setText("Price: $" + p.getPrice());
+
         int imageResId = context.getResources().getIdentifier(
                 p.getImage(), "drawable", context.getPackageName());
-
         if (imageResId != 0) {
             holder.image.setImageResource(imageResId);
         }
-        holder.deleteButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ModifyDeleteActivity.class);
-            intent.putExtra("fragment", "delete");
-            intent.putExtra("productId", p.getId());
-            context.startActivity(intent);
-        });
 
-        holder.modifyButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ModifyDeleteActivity.class);
-            intent.putExtra("fragment", "modify");
-            intent.putExtra("productId", p.getId());
-            intent.putExtra("productName", p.getName());
-            intent.putExtra("productPrice", String.valueOf(p.getPrice()));
-            intent.putExtra("productImage", p.getImage());
-            context.startActivity(intent);
-        });
+        // Admin buttons
+        if (fragmentManager != null) {
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.modifyButton.setVisibility(View.VISIBLE);
 
+            holder.deleteButton.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ModifyDeleteActivity.class);
+                intent.putExtra("fragment", "delete");
+                intent.putExtra("productId", p.getId());
+                context.startActivity(intent);
+            });
 
+            holder.modifyButton.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ModifyDeleteActivity.class);
+                intent.putExtra("fragment", "modify");
+                intent.putExtra("productId", p.getId());
+                intent.putExtra("productName", p.getName());
+                intent.putExtra("productPrice", String.valueOf(p.getPrice()));
+                intent.putExtra("productImage", p.getImage());
+                context.startActivity(intent);
+            });
+        } else {
+            // Hide admin buttons in user mode
+            holder.deleteButton.setVisibility(View.GONE);
+            holder.modifyButton.setVisibility(View.GONE);
 
+            // Set item click to open ViewProductActivity
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ViewProductActivity.class);
+                intent.putExtra("productName", p.getName());
+                intent.putExtra("productPrice", String.valueOf(p.getPrice()));
+                intent.putExtra("productImage", p.getImage());
+                context.startActivity(intent);
+            });
+        }
     }
+
 
     @Override
     public int getItemCount() {
