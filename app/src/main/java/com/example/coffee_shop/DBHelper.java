@@ -74,6 +74,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "user_id INTEGER,"
                 + "address TEXT NOT NULL)";
         db.execSQL(CREATE_ADDRESSES_TABLE);
+
+
+        String CREATE_PAYMENTS_TABLE = "CREATE TABLE payments (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "amount REAL NOT NULL, " +
+                "method TEXT NOT NULL, " +
+                "timestamp INTEGER NOT NULL)";
+        db.execSQL(CREATE_PAYMENTS_TABLE);
+
     }
 
     @Override
@@ -84,6 +93,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ADDRESSES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
+        db.execSQL("DROP TABLE IF EXISTS payments");
+
         onCreate(db);
     }
 
@@ -229,6 +240,21 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return rowsAffected > 0;
     }
+
+
+
+    // ---------- Payments ----------
+    public long addPayment(double amount, String method) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("amount", amount);
+        values.put("method", method);
+        values.put("timestamp", System.currentTimeMillis());
+        long result = db.insert("payments", null, values);
+        db.close();
+        return result;
+    }
+
 
     public boolean createOrder(int userId, String address, List<CartItem> cartItems) {
         SQLiteDatabase db = this.getWritableDatabase();
