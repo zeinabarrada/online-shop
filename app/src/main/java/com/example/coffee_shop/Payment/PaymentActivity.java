@@ -47,6 +47,9 @@ public class PaymentActivity extends AppCompatActivity {
         totalAmount = getTotalAmountFromCart(currentUserId);
         amountTextView.setText(String.format("Amount: $%.2f", totalAmount));
 
+        payButton = findViewById(R.id.buttonPay);    // or R.id.payButton (make sure it is correct)
+        payButton.setOnClickListener(v -> processPayment());
+
         //payButton.setOnClickListener(v -> processPayment());
     }
 
@@ -83,11 +86,11 @@ public class PaymentActivity extends AppCompatActivity {
         if (paymentId != -1) {
             Toast.makeText(this, "Payment successful!", Toast.LENGTH_SHORT).show();
 
-            // Optionally clear cart after successful payment
+            // Clear cart after successful payment
             dbHelper.clearUserCart(currentUserId);
 
-            // Optionally navigate back or to a confirmation screen
-            Intent intent = new Intent(PaymentActivity.this, com.example.coffee_shop.CheckoutActivity.class);
+            // Navigate to home page
+            Intent intent = new Intent(PaymentActivity.this, com.example.coffee_shop.HomeActivity.class);
             intent.putExtra("USER_ID", currentUserId);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
