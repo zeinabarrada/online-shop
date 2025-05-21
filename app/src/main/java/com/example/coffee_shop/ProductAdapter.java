@@ -2,7 +2,6 @@ package com.example.coffee_shop;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
@@ -67,33 +65,27 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.modifyButton.setVisibility(View.VISIBLE);
 
             holder.deleteButton.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ModifyDeleteActivity.class);
+                Intent intent = new Intent(context, DeleteProductFragment.class);
                 intent.putExtra("fragment", "delete");
                 intent.putExtra("productId", p.getId());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             });
 
             holder.modifyButton.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ModifyDeleteActivity.class);
+
+
+                Intent intent = new Intent(context, ModifyProductFragment.class);
                 intent.putExtra("fragment", "modify");
                 intent.putExtra("productId", p.getId());
                 intent.putExtra("productName", p.getName());
                 intent.putExtra("productPrice", String.valueOf(p.getPrice()));
                 intent.putExtra("productImage", p.getImage());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
-            });
-        } else {
-            // Hide admin buttons in user mode
-            holder.deleteButton.setVisibility(View.GONE);
-            holder.modifyButton.setVisibility(View.GONE);
 
-            // Set item click to open ViewProductActivity
-            holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ViewProductActivity.class);
-                intent.putExtra("productName", p.getName());
-                intent.putExtra("productPrice", String.valueOf(p.getPrice()));
-                intent.putExtra("productImage", p.getImage());
-                context.startActivity(intent);
+
+
             });
         }
     }

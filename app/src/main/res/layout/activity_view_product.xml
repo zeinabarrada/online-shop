@@ -23,13 +23,4 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:layout_marginTop="8dp"/>
-    <Button
-        android:id="@+id/addToCartButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add to Cart"
-        android:textColor="#000"
-        android:background="#4CAF50"
-        android:padding="10dp"
-        android:textAllCaps="false" />
 </LinearLayout>
