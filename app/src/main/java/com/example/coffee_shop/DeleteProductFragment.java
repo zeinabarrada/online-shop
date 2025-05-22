@@ -25,13 +25,6 @@ public class DeleteProductFragment extends Fragment {
         deleteButton = view.findViewById(R.id.deleteButton);
         dbHelper = new DBHelper(getContext());
 
-        Bundle args = getArguments();
-        if (args != null) {
-            String productId = args.getString("productId");
-            if (productId != null) {
-                idInput.setText(productId);
-            }
-        }
         deleteButton.setOnClickListener(v -> {
             String idStr = idInput.getText().toString();
             if (!idStr.isEmpty()) {
