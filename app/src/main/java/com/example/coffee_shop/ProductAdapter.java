@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,12 +28,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public static class ProductViewHolder extends RecyclerView.ViewHolder{
         TextView name,price;
         Button deleteButton, modifyButton;
+        ImageView productImage;
+
         public ProductViewHolder(View itemView){
             super(itemView);
             name=itemView.findViewById(R.id.productName);
             price=itemView.findViewById(R.id.productPrice);
             deleteButton = itemView.findViewById(R.id.deleteButton);
             modifyButton = itemView.findViewById(R.id.modifyButton);
+            productImage=itemView.findViewById(R.id.productImage);
         }
     }
     @NonNull
@@ -48,6 +52,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Product p = productList.get(position);
         holder.name.setText(p.getName());
         holder.price.setText("Price: $" + p.getPrice());
+        int imageResId = context.getResources().getIdentifier(
+                p.getImage(), "drawable", context.getPackageName());
+
+        if (imageResId != 0) {
+            holder.productImage.setImageResource(imageResId);
+        }
+
+
+
+
+
         holder.deleteButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, ModifyDeleteActivity.class);
             intent.putExtra("fragment", "delete");
